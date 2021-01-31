@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameOfLifePrimitive
+namespace GameOfLifePrimitive.Commands
 {
-    internal class RandomizeCommand : Command
+    internal class RandomizeCommand : ICommand
     {
-        public string CommandText
-        {
-            get
-            {
-                return "randomize";
-            }
-        }
+        public string CommandText => "randomize";
+
         public string HelpText
         {
             get
             {
-                string text = "randomize:\n";
+                var text = "randomize:\n";
                 text += "    Randomly turns all cells in the grid on or off.\n";
                 text += "    Usage: randomize {percent}\n";
                 text += "    Example: randomize .25";

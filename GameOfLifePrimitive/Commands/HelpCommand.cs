@@ -1,31 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameOfLifePrimitive
+namespace GameOfLifePrimitive.Commands
 {
-    internal class HelpCommand : Command
+    internal class HelpCommand : ICommand
     {
-        public List<Command> Commands { get; set; }
-        public string CommandText
-        {
-            get
-            {
-                return "help";
-            }
-        }
-        public string HelpText
-        {
-            get
-            {
-                return "";
-            }
-        }
+        public List<ICommand> Commands { get; set; }
+        public string CommandText => "help";
+
+        public string HelpText => "";
+
         public bool Execute(Grid grid, string[] parameters)
         {
-            Console.WriteLine("\n" + (Commands.Count + 2) + " commands available.\n");
+            Console.WriteLine("\n" + (Commands.Count + 2).ToString() + " commands available.\n");
             Console.WriteLine("exit:");
             Console.WriteLine("    Exits the program.");
             Console.WriteLine("    Usage: exit");
@@ -38,7 +25,7 @@ namespace GameOfLifePrimitive
             Console.WriteLine("    Shows this help.");
             Console.WriteLine("    Usage: help");
             Console.WriteLine();
-            foreach(Command command in Commands)
+            foreach(var command in Commands)
             {
                 Console.WriteLine(command.HelpText);
                 Console.WriteLine();

@@ -1,98 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Runtime;
 using System.IO;
+using System.Linq;
+using GameOfLifePrimitive.Commands;
 
 namespace GameOfLifePrimitive
 {
-    static class Program
+    internal static class Program
     {
-        private static Grid grid;
-        private static bool running = true;
-        private static List<Command> commands;
-        static void Main(string[] args)
+        private static Grid _grid;
+        private static bool _running = true;
+        private static List<ICommand> _commands;
+
+        private static void Main()
         {
             InitializeAllCommands();
-            grid = new Grid();
-            grid.Randomize(0.5);
-            Thread thread = new Thread(RunAnimationLoop);
+            _grid = new Grid();
+            _grid.Randomize(0.5);
+            var thread = new Thread(RunAnimationLoop);
             thread.Start();
             Thread.Sleep(500);
             while(true)
             {
                 Console.ReadKey(true);
-                running = false;
+                _running = false;
                 Thread.Sleep(500);
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Beginning a command mode. Type 'help' for help and a list of all available commands. " +
-                    "Type 'start' to begin animating. Type 'exit' to exit the program.");
-                while(true)
-                {
-                    Console.Write(">>> ");
-                    var allInput = Console.ReadLine();
-                    var parameters = allInput.Split(' ');
-                    var command = parameters[0];
-                    var success = false;
-                    if(command == "start")
-                    {
-                        break;
-                    }
-                    if(command == "exit")
-                    {
-                        Environment.Exit(0);
-                    }
-                    if(command == "help")
-                    {
-                        HelpCommand helpCommand = new HelpCommand();
-                        helpCommand.Commands = commands;
-                        helpCommand.Execute(grid, parameters);
-                    }
-                    for(int index = 0; index < commands.Count; index++)
-                    {
-                        if(command == commands[index].CommandText)
-                        {
-                            success = commands[index].Execute(grid, parameters);
-                            break;
-                        }                       
-                    }
-                    if(success)
-                    {
-                        grid.Draw();
-                    }
-                }
-                running = true;
+                RunCommandMode();
+                _running = true;
             }
         }
+
+        private static void RunCommandMode()
+        {
+            Console.WriteLine("Beginning a command mode. Type 'help' for help and a list of all available commands. " +
+                              "Type 'start' to begin animating. Type 'exit' to exit the program.");
+            while (true)
+            {
+                Console.Write(">>> ");
+                var allInput = Console.ReadLine();
+                var parameters = allInput?.Split(' ');
+                var command = parameters?[0];
+                if (command == "start")
+                {
+                    break;
+                }
+
+                switch (command)
+                {
+                    case "exit":
+                        Environment.Exit(0);
+                        break;
+                    case "help":
+                    {
+                        var helpCommand = new HelpCommand {Commands = _commands};
+                        helpCommand.Execute(_grid, parameters);
+                        break;
+                    }
+                }
+
+                var success = (from t in _commands where command == t.CommandText select t.Execute(_grid, parameters))
+                   .FirstOrDefault();
+                if (success)
+                {
+                    _grid.Draw();
+                }
+            }
+        }
+
         private static void InitializeAllCommands()
         {
-            commands = new List<Command>();
-            commands.Add(new RandomizeCommand());
-            commands.Add(new TurnCommand());
-            commands.Add(new GridCommand());
-            commands.Add(new WrapCommand());
-            commands.Add(new ClearCommand());
-            var path = "./Resources/";
-            var premadeObjects = Directory.GetFiles(path);
-            foreach(string objectFile in premadeObjects)
+            _commands = new List<ICommand>
             {
-                commands.Add(new PremadeCommand(objectFile));
+                new RandomizeCommand(),
+                new TurnCommand(),
+                new GridCommand(),
+                new WrapCommand(),
+                new ClearCommand()
+            };
+            const string path = "./Resources/";
+            var premadeObjects = Directory.GetFiles(path);
+            foreach(var objectFile in premadeObjects)
+            {
+                _commands.Add(new PremadeCommand(objectFile));
             }    
         }
         private static void RunAnimationLoop()
         {
             while(true)
             {
-                if(running)
+                if(_running)
                 {
-                    grid.Update();
-                    grid.Draw();
+                    _grid.Update();
+                    _grid.Draw();
                 }
                 Thread.Sleep(500);
             }
+            
         }
     }
 }

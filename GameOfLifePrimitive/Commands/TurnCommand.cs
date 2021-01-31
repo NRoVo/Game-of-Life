@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameOfLifePrimitive
+namespace GameOfLifePrimitive.Commands
 {
-    internal class TurnCommand : Command
+    internal class TurnCommand : ICommand
     {
-        public string CommandText
-        {
-            get
-            {
-                return "turn";
-            }
-        }
+        public string CommandText => "turn";
+
         public string HelpText
         {
             get
             {
-                string text = "turn:\n";
+                var text = "turn:\n";
                 text += "    Turns individual cells on or off\n";
                 text += "    Usage: turn on|off {x} {y}\n";
                 text += "    Example: turn on 4 6";
@@ -40,16 +31,18 @@ namespace GameOfLifePrimitive
             }
             try
             {
-                var turnOn = true;
-                if (parameters[1] == "on")
+                bool turnOn;
+                switch (parameters[1])
                 {
-                    turnOn = true;
+                    case "on":
+                        turnOn = true;
+                        break;
+                    case "off":
+                        turnOn = false;
+                        break;
+                    default:
+                        throw new Exception("Error interpreting first parameter. Must be 'on' or 'off'.");
                 }
-                else if (parameters[1] == "off")
-                {
-                    turnOn = false;
-                }
-                else throw new Exception("Error interpreting first parameter. Must be 'on' or 'off'.");
                 var row = Convert.ToInt32(parameters[2]) - 1;
                 var column = Convert.ToInt32(parameters[3]) - 1;
                 grid.Set(row, column, turnOn);
