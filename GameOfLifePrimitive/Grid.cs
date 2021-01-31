@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameOfLifePrimitive
 {
     internal class Grid
     {
-        private bool[,] values;
-        public int Rows { get; private set; }
-        public int Columns { get; private set; }
+        private bool[,] _values;
+        private int Rows { get; }
+        private int Columns { get; }
         public bool Wrap { get; set; }
         public bool ShowGrid { get; set; }
-        public Grid(int rows, int columns)
+
+        private Grid(int rows, int columns)
         {
-            values = new bool[rows, columns];
+            _values = new bool[rows, columns];
             Rows = rows;
             Columns = columns;
             Wrap = false;
@@ -26,18 +23,18 @@ namespace GameOfLifePrimitive
         }
         public void Randomize(double percent)
         {
-            Random random = new Random();
-            for (int row = 0; row < Rows; row++)
+            var random = new Random();
+            for (var row = 0; row < Rows; row++)
             {
-                for (int column = 0; column < Columns; column++)
+                for (var column = 0; column < Columns; column++)
                 {
                     if (random.NextDouble() < percent)
                     {
-                        values[row, column] = true;
+                        _values[row, column] = true;
                     }
                     else
                     {
-                        values[row, column] = false;
+                        _values[row, column] = false;
                     }
                 }
             }
@@ -46,7 +43,7 @@ namespace GameOfLifePrimitive
         {
             row = (row + Rows) % Rows;
             column = (column + Columns) % Columns;
-            return values[row, column];
+            return _values[row, column];
         }
         private bool IsCellAliveUnwrapped(int row, int column)
         {
@@ -66,20 +63,14 @@ namespace GameOfLifePrimitive
             {
                 return false;
             }
-            return values[row, column];
+            return _values[row, column];
         }
         private bool IsCellAlive(int row, int column)
         {
-            if(Wrap)
-            {
-                return IsCellAliveWrapped(row, column);
-            }
-            else
-            {
-                return IsCellAliveUnwrapped(row, column);
-            }
+            return Wrap ? IsCellAliveWrapped(row, column) : IsCellAliveUnwrapped(row, column);
         }
-        public int CountNeighbors(int row, int column)
+
+        private int CountNeighbors(int row, int column)
         {
             var count = 0;
             if(IsCellAlive(row - 1, column - 1))
@@ -118,47 +109,45 @@ namespace GameOfLifePrimitive
         }
         public void Update()
         {
-            bool[,] nextGeneration = new bool[Rows, Columns];
-            for (int row = 0; row < Rows; row++)
+            var nextGeneration = new bool[Rows, Columns];
+            for (var row = 0; row < Rows; row++)
             {
-                for(int column = 0; column < Columns; column++)
+                for(var column = 0; column < Columns; column++)
                 {
                     var count = CountNeighbors(row, column);
-                    var isCurrentlyAlive = values[row, column];
-                    if(isCurrentlyAlive && count > 3)
+                    var isCurrentlyAlive = _values[row, column];
+                    switch (isCurrentlyAlive)
                     {
-                        isCurrentlyAlive = false;
-                    }
-                    else if(isCurrentlyAlive && count < 2)
-                    {
-                        isCurrentlyAlive = false;
-                    }
-                    else if (!isCurrentlyAlive && count == 3)
-                    {
-                        isCurrentlyAlive = true;
+                        case true when count > 3:
+                        case true when count < 2:
+                            isCurrentlyAlive = false;
+                            break;
+                        case false when count == 3:
+                            isCurrentlyAlive = true;
+                            break;
                     }
                     nextGeneration[row, column] = isCurrentlyAlive;
                 }
             }
-            values = nextGeneration;
+            _values = nextGeneration;
         }
         public void Draw()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("███");
-            for (int column = 0; column < Columns + 1; column++)
+            for (var column = 0; column < Columns + 1; column++)
             {
                 Console.Write("██");
             }
             Console.WriteLine();
-            for(int row = 0; row < Rows; row++)
+            for(var row = 0; row < Rows; row++)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("██ ");
-                for (int column = 0; column < Columns; column++)
+                for (var column = 0; column < Columns; column++)
                 {
-                    var alive = values[row, column];
+                    var alive = _values[row, column];
                     if(alive)
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
@@ -167,14 +156,7 @@ namespace GameOfLifePrimitive
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        if(ShowGrid)
-                        {
-                            Console.Write(". ");
-                        }
-                        else
-                        {
-                            Console.Write("  ");
-                        }
+                        Console.Write(ShowGrid ? ". " : "  ");
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -191,15 +173,15 @@ namespace GameOfLifePrimitive
         }
         public void Set(int row, int column, bool on)
         {
-            values[row, column] = on;
+            _values[row, column] = on;
         }
         public void Clear()
         {
-            for (int row = 0; row < Rows; row++)
+            for (var row = 0; row < Rows; row++)
             {
-                for (int column = 0; column < Columns; column++)
+                for (var column = 0; column < Columns; column++)
                 {
-                    values[row, column] = false;
+                    _values[row, column] = false;
                 }
             }
         }

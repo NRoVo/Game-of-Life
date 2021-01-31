@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameOfLifePrimitive
+namespace GameOfLifePrimitive.Commands
 {
-    internal class ClearCommand : Command
+    internal class ClearCommand : ICommand
     {
-        public string CommandText 
-        {
-            get 
-            {
-                return "clear";
-            }
-        }
+        public string CommandText => "clear";
+
         public string HelpText
         {
             get 

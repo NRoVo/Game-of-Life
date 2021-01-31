@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameOfLifePrimitive
+namespace GameOfLifePrimitive.Commands
 {
-    internal class GridCommand : Command
+    internal class GridCommand : ICommand
     {
-        public string CommandText
-        {
-            get
-            {
-                return "grid";
-            }
-        }
+        public string CommandText => "grid";
+
         public string HelpText
         {
             get
@@ -39,16 +30,18 @@ namespace GameOfLifePrimitive
             }
             try
             {
-                var turnOn = true;
-                if (parameters[1] == "on")
+                bool turnOn;
+                switch (parameters[1])
                 {
-                    turnOn = true;
+                    case "on":
+                        turnOn = true;
+                        break;
+                    case "off":
+                        turnOn = false;
+                        break;
+                    default:
+                        throw new Exception("Error interpreting first parameter. Must be 'on' or 'off'.");
                 }
-                else if (parameters[1] == "off")
-                {
-                    turnOn = false;
-                }
-                else throw new Exception("Error interpreting first parameter. Must be 'on' or 'off'.");
                 grid.ShowGrid = turnOn;
                 return true;
             }
