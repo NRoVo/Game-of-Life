@@ -19,8 +19,8 @@ cells "extinction" because of deficit or overcrowding.
 * ```grid on|off```. Turns the display of the grid on or off (Ex: ```grid on```).
 * ```wrap on|off```. Allows the board to wrap around from side to side and from top to bottom. In case of activation the cells on the opposite sides of row or column will count
 as neighbors. Disabled by default. (Ex: ```wrap off```)
-* Premade commands. Each command described below takes one particular item of premade grid fragments stored in Resources directory. Each "draws" a particular pattern on the
-location defined by user. These patterns has very interesting behavior. Their evolution is looped.
+* Premade commands. Each command described below takes one particular item of premade grid fragments stored in Resources directory. Each sets a particular pattern on the
+location defined by user. Each pattern has its own behavior. Their evolution is looped.
   * ```blinker {x} {y}```. Places a blinker on the grid at a specific location (Ex: ```blinker 4 6```).
   * ```diehard {x} {y}```. Places a diehard on the grid at a specific location (Ex: ```diehard 4 6```).
   * ```glider {x} {y}```. Places a glider on the grid at a specific location (Ex: ```glider 4 6```).
