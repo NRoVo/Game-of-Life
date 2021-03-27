@@ -17,7 +17,7 @@ of the grid population (Ex: ```randomize 0.25```). The default parameter when th
 cells "extinction" because of deficit or overcrowding.
 * ```turn on|off {x} {y}```. Turns individual cell on or off (Ex: ```turn on 4 6```).
 * ```grid on|off```. Turns the display of the grid on or off (Ex: ```grid on```).
-* ```wrap on|off```. Allows the board to wrap around from side to side ant from top to bottom. In case of activation the cells on the opposite sides from row or column will counts
+* ```wrap on|off```. Allows the board to wrap around from side to side and from top to bottom. In case of activation the cells on the opposite sides from row or column will counts
 as neighbors. Disabled by default. (Ex: ```wrap off```)
 * Premade commands. Each of commands described below takes one particular of premade grid fragments stored in Resources directory. Each "draws" a particular pattern on the
 location defined by user. These patterns has very interesting behavior. Their evolution is looped.
