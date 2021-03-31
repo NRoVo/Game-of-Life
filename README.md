@@ -3,7 +3,7 @@ A console simulation of a "zero player" Game of Life invented by mathematician C
 
 # What
 The game is "played" on a grid, where it advances in generations, with cells becoming alive or dying, based on certain conditions. If a particular cell in the grid is empty (dead)
-then it can come to life if exactly three neighbors that are alive. Therefore the alive cell dies in case it has more than three neighbors (overcrowding) or it has 0 or 1 
+then it can come to life if exactly three neighbors are alive. Therefore the alive cell dies in case it has more than three neighbors (overcrowding) or it has 0 or 1 
 neighbors. This program is console based and has no GUI. The program is based on Command design pattern.
 
 # How to
